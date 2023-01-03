@@ -1,0 +1,45 @@
+<!-- Tabla de valores de los tramites -->
+<div class="w-full flex flex-col flex-auto overflow-hidden pt-6">
+    <table mat-table [dataSource]="dataSource" matSort class="w-full" matTableExporter #exporter="matTableExporter">
+        <ng-container [matColumnDef]="columna.nombreCampo" *ngFor="let columna of columnas; let i = index">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">{{ columna.nombreColumna |
+                titlecase
+                }}</th>
+            <td mat-cell *matCellDef="let emp" class="text-center">
+                {{ emp[columna.nombreCampo] }}
+            </td>
+        </ng-container>
+
+        <ng-container [matColumnDef]="this.botones.nombreCampo" *ngFor="let botones of botonesTabla;">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">{{ botones.nombreColumna |
+                titlecase
+                }}</th>
+            <td mat-cell *matCellDef="let row" class="text-center">
+                <button mat-icon-button type="button" *ngIf="this.botones.tipo === 'boton'"
+                    [matTooltip]="this.botones.text" (click)="this.botones.accion(row)">
+                    <mat-icon [ngClass]="this.botones.colorTexto" [svgIcon]="this.botones.icono"></mat-icon>
+                </button>
+                <mat-checkbox [color]="'primary'" *ngIf="this.botones.tipo === 'seleccionar'"
+                    (change)="this.botones.accion(row)" #check>
+                </mat-checkbox>
+                <mat-slide-toggle *ngIf="this.botones.tipo === 'slide'" (change)="this.botones.accion(row)">
+                </mat-slide-toggle>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let emp; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" *ngIf="paginacion"></mat-paginator>
+</div>
+
+<div class="grid grid-cols-1 justify-items-center md:flex flex-row">
+    <button class="m-2" [botonRedondo]="'purple'" type="button"
+        (click)="exporter.exportTable(botones.tipo, {fileName: nombreArchivo})"
+        *ngFor="let botones of botonesExportar;">
+        <mat-icon class="mr-2" [svgIcon]="'heroicons_outline:document-download'">
+        </mat-icon>
+        <span>{{botones.texto}}</span>
+    </button>
+</div>

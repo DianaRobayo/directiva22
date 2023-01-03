@@ -1,0 +1,17 @@
+<div class="text-xl font-bold text-accent mt-2 mb-2 ml-1">
+  <div class="flex flex-row gap-3">
+    <mat-icon *ngIf="icono" class="icon-size-7 text-{{colorIcono}}" 
+      [svgIcon]='icono'>
+    </mat-icon>
+    {{titulo}}
+  </div>
+  <mat-divider class="mt-4 mb-4"></mat-divider>
+</div>
+
+<div class="text-base mb-4 ml-1" *ngIf="parrafo">
+  <p> {{parrafo}} </p>       
+</div>
+
+<div class="text-base mb-4 ml-1" *ngIf="parrafoDos">     
+  <p> {{parrafoDos}} </p>       
+</div>

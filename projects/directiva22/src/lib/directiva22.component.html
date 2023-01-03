@@ -1,0 +1,435 @@
+<div
+  class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary rounded-xl text-on-primary">
+  <div class="text-lg font-medium">Información de ubicación</div>
+  <!-- *ngIf="user.directiva22 === true" -->
+  <button  mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<div class="flex flex-col gt-xs:flex-row gt-xs:items-start">
+  <form class="mt-4">
+    <mat-dialog-content>
+      <ng-container *ngIf="loading">
+        <div class="text-center p-4"> Cargando módulo </div>
+        <mat-progress-spinner class="m-auto" 
+          [diameter]="24" 
+          [mode]="'indeterminate'">
+        </mat-progress-spinner>
+      </ng-container>
+      <ng-container *ngIf="!loading">
+        <mat-stepper linear #stepper>
+          <!-- SECCION 1  -->
+          <mat-step [stepControl]="seccionUnoForm">
+            <div [formGroup]="seccionUnoForm">
+              <div class="flex flex-col gap-4 sm:flex-row mt-3">
+                <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                  <mat-label>País</mat-label>                  
+                  <mat-select [formControl]="$any(seccionUnoForm).controls['Pais']"
+                    (selectionChange)="cambioPais($event)">
+                    <mat-option *ngFor="let pais of paises" 
+                      [value]="pais.idPais">{{ pais.pais }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Pais'].hasError('required')">
+                    El país es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="flex-auto fuse-mat-dense w-full" 
+                  *ngIf="!paisExtranjero">
+                  <mat-label>Departamento</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls['Departamento']"
+                    (selectionChange)="cambioDepartamento($event)">
+                    <mat-option *ngFor="let departamento of departamentos" 
+                      [value]="departamento.idDepartamento">
+                      {{ departamento.nombreDepartamento }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Departamento'].hasError('required')">
+                    El departamento es requerido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="flex-auto fuse-mat-dense w-full" 
+                  *ngIf="!paisExtranjero">
+                  <mat-label>Ciudad</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls['Ciudad']" 
+                    (selectionChange)="cambioCiudad($event)">
+                    <mat-option *ngFor="let ciudad of ciudades" 
+                      [value]="ciudad.idMunicipio">{{ ciudad.nombreMunicipio }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Ciudad'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="flex-auto fuse-mat-dense w-full" 
+                  *ngIf="paisExtranjero">
+                  <mat-label>Ciudad</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls['Ciudad']" 
+                    (selectionChange)="cambioCiudad($event)">
+                    <mat-option *ngFor="let ciudad of ciudades" 
+                      [value]="ciudad.idCiudad">{{ ciudad.ciudad }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Ciudad'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                  <mat-label>Zona</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls.Zona" 
+                    (selectionChange)="cambioZona($event)">
+                    <mat-option *ngFor="let zona of zonas" 
+                      [value]="zona.idZona">{{ zona.nombreZona }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Zona'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col gap-6 sm:flex-row w-full">
+                <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                  <mat-label>Nomenclatura</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls.Nomenclatura">
+                    <mat-option [value]="null"> -- </mat-option>
+                    <mat-option *ngFor="let nomenclatura of nomenclaturas" 
+                      [value]="nomenclatura.idNomenclatura">{{
+                      nomenclatura.nombreNomenclatura }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Nomenclatura'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                  <mat-label>Localidad</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls.Localidad"
+                    (selectionChange)="cambioLocalidad($event)">
+                    <mat-option [value]="null"> -- </mat-option>
+                    <mat-option *ngFor="let localidad of localidades" 
+                      [value]="localidad.idLocalidad">{{
+                      localidad.localidad }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Localidad'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                  <mat-label>Barrio</mat-label>
+                  <mat-select [formControl]="$any(seccionUnoForm).controls.Barrio">
+                    <mat-option [value]="null"> -- </mat-option>
+                    <mat-option *ngFor="let barrio of barrios"
+                      [value]="barrio.idBarrio">{{ barrio.nombreBarrio
+                      }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="seccionUnoForm.controls['Barrio'].hasError('required')">
+                    Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="flex flex-col items-center" 
+                *ngIf="loadingModules">
+                <mat-progress-spinner class="ml-2" 
+                  [diameter]="24" 
+                  [mode]="'indeterminate'">
+                </mat-progress-spinner>
+              </div>
+              <div class="mt-4 flex flex-row items-center justify-end w-full pb-6 sm:pb-8">
+                <button class="border-primary hover:bg-primary hover:text-white"
+                   type="button" 
+                   color="primary"
+                    mat-stroked-button 
+                    matStepperNext
+                    [disabled]="seccionUnoForm.invalid">
+                  <span>Siguiente</span>
+                  <mat-icon class="mr-2 icon-size-5" 
+                    [svgIcon]="'heroicons_outline:arrow-right'">
+                  </mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-step>
+
+          <!-- SECCION 2  -->
+          <mat-step [stepControl]="seccionDosForm">
+            <div [formGroup]="seccionDosForm">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4" 
+                *ngIf="banderaSteper">
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto  w-full">
+                    <mat-label>Vía Principal</mat-label>
+                    <mat-select [formControl]="$any(seccionDosForm).controls.ViaPrincipal"
+                      (selectionChange)="cambioVia($event); 
+                      escribirPrevisualizacion()">
+                      <mat-option value="0" 
+                        (click)="cambioVia($event)"> -- </mat-option>
+                      <mat-option *ngFor="let via of tiposVia" 
+                        [value]="via.idVia">{{ via.descripcionVia }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="seccionDosForm.controls['ViaPrincipal'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex flex-col">
+                  <div>
+                    <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                      <mat-label> Número Vía Principal</mat-label>
+                      <input matInput type="number" 
+                        [formControl]="$any(seccionDosForm).controls.NumeroDeViaPrincipal"
+                        (change)="escribirPrevisualizacion()" 
+                        min="0">
+                      <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaPrincipal'].hasError('required')">
+                        Este campo es obligatorio
+                      </mat-error>
+                      <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaPrincipal'].hasError('min')">
+                        Mínimo 0
+                      </mat-error>
+                      <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaPrincipal'].hasError('max')">
+                        Máximo 300
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                      <mat-label>Nombre Vía Principal</mat-label>
+                      <input matInput
+                        [formControl]="$any(seccionDosForm).controls.NombreDeViaPrincipal"
+                        (change)="escribirPrevisualizacion()">
+                      <mat-error *ngIf="seccionDosForm.controls['NombreDeViaPrincipal'].hasError('required')">
+                        Este campo es obligatorio
+                      </mat-error>
+                      <mat-error *ngIf="seccionDosForm.controls['NombreDeViaPrincipal'].hasError('maxlength')">
+                        Máximo 50 caracteres
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Sinónimo Vía Principal</mat-label>
+                    <input matInput 
+                      [formControl]="$any(seccionDosForm).controls.SinonimoDeViaPrincipal"
+                      (change)="escribirPrevisualizacion()">
+                    <mat-error *ngIf="seccionDosForm.controls['SinonimoDeViaPrincipal'].hasError('maxlength')">
+                      Máximo 50 caracteres
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Letra Vía Principal</mat-label>
+                    <mat-select [formControl]="$any(seccionDosForm).controls.LetraDeViaPrincipal"
+                      (selectionChange)="escribirPrevisualizacion()">
+                      <mat-option [value]="null"> -- </mat-option>
+                      <mat-option *ngFor="let letra of letras" 
+                        [value]="letra.idLetraVia">{{ letra.letraVia
+                        }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="seccionDosForm.controls['LetraDeViaPrincipal'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center flex-row">
+                  <div class="mx-2 sm:mb-10 flex flex-col">
+                    <mat-label class="font-medium">Bis</mat-label>
+                    <mat-checkbox class="items-center"
+                      [color]="'primary'"
+                      [formControl]="$any(seccionDosForm).controls.BisDeViaPrincipal" 
+                      (change)="escribirPrevisualizacion()">
+                    </mat-checkbox>
+                  </div>
+                  <div class="w-full">
+                    <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                      <mat-label>Letra Bis</mat-label>
+                      <mat-select [formControl]="$any(seccionDosForm).controls.LetraDeBisDeViaPrincipal"
+                        (selectionChange)="escribirPrevisualizacion()">
+                        <mat-option [value]="null"> -- </mat-option>
+                        <mat-option *ngFor="let letra of letras"
+                          [value]="letra.idLetraVia">{{letra.letraVia}}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="seccionDosForm.controls['LetraDeBisDeViaPrincipal'].hasError('required')">
+                        Este campo es obligatorio
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Cuadrante De Vía Principal</mat-label>
+                    <mat-select [formControl]="$any(seccionDosForm).controls.CuadranteDeViaPrincipal"
+                      (selectionChange)="escribirPrevisualizacion()">
+                      <mat-option [value]="null"> -- </mat-option>
+                      <mat-option *ngFor="let cuadrante of cuadrantes" 
+                        [value]="cuadrante.idCuadrante">{{
+                        cuadrante.nombreCuadrante }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center flex-row">
+                  <div class="flex items-center">
+                    <span class="items-center pr-3">#</span>
+                  </div>
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Número De Vía Generadora</mat-label>
+                    <input matInput type="number" 
+                      [formControl]="$any(seccionDosForm).controls.NumeroDeViaGeneradora"
+                      (change)="escribirPrevisualizacion()" 
+                      min="0">
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaGeneradora'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaGeneradora'].hasError('min')">
+                      Mínimo 0
+                    </mat-error>
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDeViaGeneradora'].hasError('max')">
+                      Máximo 300
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center flex-row">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Letra de Vía Generadora</mat-label>
+                    <mat-select [formControl]="$any(seccionDosForm).controls.LetraDeViaGeneradora"
+                      (selectionChange)="escribirPrevisualizacion()">
+                      <mat-option [value]="null"> -- </mat-option>
+                      <mat-option *ngFor="let letra of letras"
+                        [value]="letra.idLetraVia">{{letra.letraVia}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="seccionDosForm.controls['LetraDeViaGeneradora'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                  <div class="flex flex-row">
+                    <span class="items-center ml-3">-</span>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Número De Placa</mat-label>
+                    <input matInput type="number" 
+                      [formControl]="$any(seccionDosForm).controls.NumeroDePlaca"
+                      (change)="escribirPrevisualizacion()" 
+                      min="0">
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDePlaca'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDePlaca'].hasError('min')">
+                      Mínimo 0
+                    </mat-error>
+                    <mat-error *ngIf="seccionDosForm.controls['NumeroDePlaca'].hasError('max')">
+                      Máximo 99
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex flex-col">
+                  <div>
+                    <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                      <mat-label>Cuadrante</mat-label>
+                      <mat-select [formControl]="$any(seccionDosForm).controls.CuadranteDeViaGeneradora"
+                        (selectionChange)="escribirPrevisualizacion()">
+                        <mat-option [value]="null"> -- </mat-option>
+                        <mat-option *ngFor="let cuadrante of cuadrantes" 
+                          [value]="cuadrante.idCuadrante">{{
+                          cuadrante.nombreCuadrante }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                      <mat-label>Estrato</mat-label>
+                      <mat-select [formControl]="$any(seccionDosForm).controls.Estrato">
+                        <mat-option *ngFor="let estrato of estratos" 
+                          [value]="estrato.idEstrato">{{
+                          estrato.nombreEstrato
+                          }}
+                        </mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="seccionDosForm.controls['Estrato'].hasError('required')">
+                        Este campo es obligatorio
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>{{banderaSteper? 'Complemento': 'Dirección Rural'}}</mat-label>
+                    <input matInput [formControl]="$any(seccionDosForm).controls.Complemento"
+                      (keyup)="escribirPrevisualizacion()">
+                    <mat-error *ngIf="seccionDosForm.controls['Complemento'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center">
+                  <mat-form-field class="flex-auto fuse-mat-dense w-full">
+                    <mat-label>Motivo De La Actualización</mat-label>
+                    <mat-select [formControl]="$any(seccionDosForm).controls.MotivoDeLaActualizacion">
+                      <mat-option *ngFor="let motivo of motivos" 
+                        [value]="motivo.idMotivoDir22">{{
+                        motivo.codMotivoDir22 }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="seccionDosForm.controls['MotivoDeLaActualizacion'].hasError('required')">
+                      Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="flex items-center col-span-2">
+                  <mat-form-field class="flex-auto  w-full">
+                    <mat-label>Previsualización dirección</mat-label>
+                    <input readonly matInput [formControl]="previsualizacion">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="mt-4 flex flex-row items-center justify-between w-full pb-6 sm:pb-8">
+                <button class="border-primary hover:bg-primary hover:text-white" 
+                  type="button" 
+                  mat-stroked-button
+                  matStepperPrevious>
+                  <mat-icon class="mr-2 icon-size-3" 
+                    [svgIcon]="'heroicons_outline:arrow-left'">
+                  </mat-icon>
+                  <span>Volver</span>
+                </button>
+                <button class="border-primary hover:bg-primary hover:text-white" 
+                  type="button"
+                  (click)="guardarDirectiva()" 
+                  disabled='{{seccionDosForm.invalid}}' 
+                  color="primary" 
+                  mat-stroked-button>
+                  <span>Guardar</span>
+                  <mat-icon class="mr-2 icon-size-5" 
+                    [svgIcon]="'heroicons_outline:arrow-right'">
+                  </mat-icon>
+                </button>
+              </div>
+              <div class="flex flex-col items-center" 
+                *ngIf="loadingModules">
+                <mat-progress-spinner class="ml-2" 
+                  [diameter]="24" 
+                  [mode]="'indeterminate'">
+                </mat-progress-spinner>
+              </div>
+            </div>
+          </mat-step>
+        </mat-stepper>
+      </ng-container>
+    </mat-dialog-content>
+  </form>
+</div>
